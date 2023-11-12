@@ -9,13 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.16",
+    "@mui/material": "^5.14.17",
+    "@react-spring/web": "^9.7.3",
     "@types/node": "20.9.0",
     "@types/react": "18.2.37",
     "@types/react-dom": "18.2.15",
+    "apexcharts": "^3.35.5",
+    "axios": "^1.6.1",
     "eslint": "8.53.0",
     "eslint-config-next": "14.0.2",
     "next": "14.0.2",
     "react": "18.2.0",
+    "react-apexcharts": "^1.4.1",
     "react-dom": "18.2.0",
     "typescript": "5.2.2"
   }
