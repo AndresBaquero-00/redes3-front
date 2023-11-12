@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import { Box } from '@mui/material';
 import { ApexOptions } from 'apexcharts';
 import { Datum } from '@/interfaces';
+import { useMemo } from 'react';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -39,6 +40,26 @@ interface Props {
 }
 
 export const HistoryTemperatureChart = ({ data }: Props) => {
+    const categories = useMemo(() => data.map(({ datetime }) => {
+        const splitted = datetime.split('T');
+        return `${splitted.at(0)}  ${splitted.at(1)?.split('.').at(0)}`
+    }), [data]);
+
+    const series = useMemo(() => [
+        {
+            name: 'Temperatura',
+            data: data.map(({ weather }) => weather.temp)
+        },
+        {
+            name: 'NO',
+            data: data.map(({ aq }) => aq.no)
+        },
+        {
+            name: 'NH3',
+            data: data.map(({ aq }) => aq.nh3)
+        }
+    ], [data]);
+
     return (
         <Box>
             {
@@ -46,19 +67,9 @@ export const HistoryTemperatureChart = ({ data }: Props) => {
                     <Chart
                         options={{
                             ...options,
-                            xaxis: {
-                                categories: data.map(({ datetime }) => {
-                                    const splitted = datetime.split('T');
-                                    return `${splitted.at(0)}  ${splitted.at(1)?.split('.').at(0)}`
-                                }).reverse(),
-                            },
+                            xaxis: { categories }
                         }}
-                        series={[
-                            {
-                                name: 'Temperatura',
-                                data: data.map(({ weather }) => weather.temp).reverse()
-                            }
-                        ]}
+                        series={series}
                         type='bar'
                         height={350}
                     />

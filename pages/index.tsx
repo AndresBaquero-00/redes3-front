@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Box } from '@mui/material';
 import { Air, Timelapse, WaterDrop } from '@mui/icons-material';
@@ -6,15 +5,13 @@ import { Air, Timelapse, WaterDrop } from '@mui/icons-material';
 import { axios } from '@/config';
 import { AQInfoCard, Header, HistoryTemperatureChart, InfoCard, Temperature } from '@/components';
 import { APIResponse, Datum } from '@/interfaces';
+import { GetStaticProps } from 'next';
 
-export default function Home() {
-  const [data, setData] = useState<Datum[]>([]);
+interface Props {
+  data: Datum[];
+}
 
-  useEffect(() => {
-    axios.get<APIResponse>('/api/v2/list')
-      .then(res => { setData(res.data.data); });
-  }, []);
-
+export default function Home({ data }: Props) {
   return (
     <>
       <Head>
@@ -93,9 +90,17 @@ export default function Home() {
               units={false}
             />
           </Box>
-          <HistoryTemperatureChart data={data} />
+          <HistoryTemperatureChart data={[...data].reverse()} />
         </Box>
       </Box>
     </>
   )
+}
+
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { data } = await axios.get<APIResponse>('/api/v2/list');
+  return { 
+    props: { data: data.data },
+  };
 }
